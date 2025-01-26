@@ -35,7 +35,7 @@ pico_sdk_init()
 
 # Add executable. Default name is the project name, version 0.1
 
-add_executable(animacoes-matriz-LEDs animacoes-matriz-LEDs.c )
+add_executable(animacoes-matriz-LEDs animacoes-matriz-LEDs.c  )
 
 pico_set_program_name(animacoes-matriz-LEDs "animacoes-matriz-LEDs")
 pico_set_program_version(animacoes-matriz-LEDs "0.1")
@@ -44,7 +44,7 @@ pico_set_program_version(animacoes-matriz-LEDs "0.1")
 pico_enable_stdio_uart(animacoes-matriz-LEDs 0)
 pico_enable_stdio_usb(animacoes-matriz-LEDs 1)
 
-pico_generate_pio_header(animacoes-matriz-LEDs ${CMAKE_CURRENT_LIST_DIR}/ws2812.pio)
+pico_generate_pio_header(animacoes-matriz-LEDs ${CMAKE_CURRENT_LIST_DIR}/ws2818b.pio)
 
 # Add the standard library to the build
 target_link_libraries(animacoes-matriz-LEDs
