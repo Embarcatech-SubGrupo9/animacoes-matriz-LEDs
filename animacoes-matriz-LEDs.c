@@ -5,7 +5,7 @@
 #include "pico/bootrom.h"
 #include "hardware/watchdog.h"
 
-//Controlar leds 5x5
+// Controlar leds 5x5
 #include "hardware/pio.h"
 #include "ws2818b.pio.h"
 
@@ -23,7 +23,7 @@ const uint8_t buzzer_pin = 10;
 
 void inicializar_pinos();
 char verificar_tecla();
-void ligar_todos_leds(uint8_t r,uint8_t g, uint8_t b, float brilho, PIO pio, uint sm);
+void ligar_todos_leds(uint8_t r, uint8_t g, uint8_t b, float brilho, PIO pio, uint sm);
 
 const char mapa_tecla[4][4] = {
     {'1', '2', '3', 'A'},
@@ -42,13 +42,7 @@ int main()
 
     while (true)
     {
-
         char tecla = verificar_tecla(); // Obtém a tecla pressionada
-        //Modo terminal
-        if (stdio_usb_connected() && getchar_timeout_us(0) != PICO_ERROR_TIMEOUT)
-       {
-            char tecla = getchar();
-
         // Utilizando switch para simplificar os casos
         switch (tecla)
         {
@@ -105,7 +99,6 @@ int main()
             sleep_ms(100);
             break;
         }
-       }
     }
     return 0;
 }
@@ -162,10 +155,10 @@ char verificar_tecla()
     return '\0'; // se nenhuma tecla for pressionada
 }
 
-//função para ligar todos os leds 5x5
+// função para ligar todos os leds 5x5
 void ligar_todos_leds(uint8_t r, uint8_t g, uint8_t b, float brilho, PIO pio, uint sm)
 {
-    //ajustar a cor do brilh
+    // ajustar a cor do brilh
     r = (uint8_t)(r * brilho);
     g = (uint8_t)(g * brilho);
     b = (uint8_t)(b * brilho);
@@ -176,7 +169,8 @@ void ligar_todos_leds(uint8_t r, uint8_t g, uint8_t b, float brilho, PIO pio, ui
     {
         pio_sm_put_blocking(pio, sm, adjusted_color);
     }*/
-       for (int i = 0; i < NUM_LEDS; i++) {
+    for (int i = 0; i < NUM_LEDS; i++)
+    {
         pio_sm_put_blocking(pio, sm, b); // WS2818B usa ordem GRB
         pio_sm_put_blocking(pio, sm, r);
         pio_sm_put_blocking(pio, sm, g);
