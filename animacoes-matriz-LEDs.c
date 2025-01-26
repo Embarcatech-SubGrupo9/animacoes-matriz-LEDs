@@ -44,6 +44,10 @@ int main()
     {
 
         char tecla = verificar_tecla(); // Obtém a tecla pressionada
+        //funcao de teste
+       // if (stdio_usb_connected() && getchar_timeout_us(0) != PICO_ERROR_TIMEOUT)
+        //{
+        //    char tecla = getchar();
 
         // Utilizando switch para simplificar os casos
         switch (tecla)
