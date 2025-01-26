@@ -84,16 +84,42 @@ int main()
                 sleep_ms(100); // Ação genérica para essas teclas
                 break;
             case '*':
-                reboot_sistema(); // Reinicia o sistema para a tecla '*'
+                reset_usb_boot(0, 0);
                 sleep_ms(100);
                 break;
-
             default:
                 sleep_ms(100);
                 break;
             }
         }
         sleep_ms(100);
+    }
+}
+
+// Função para inicializar os pinos
+void inicializar_pinos()
+{ // Inicializando as colunas do teclado matricial
+
+    for (int i = 0; i < colunas; i++)
+    {
+        gpio_init(coluna_pins[i]);
+        gpio_set_dir(coluna_pins[i], GPIO_IN);
+        gpio_pull_down(coluna_pins[i]);
+    }
+
+    // Inicializando as linhas do teclado matricial
+    for (int i = 0; i < linhas; i++)
+    {
+        gpio_init(linha_pins[i]);
+        gpio_set_dir(linha_pins[i], GPIO_OUT);
+        gpio_put(linha_pins[i], 0);
+    }
+
+    // Inicializando os leds green, blue e red
+    for (int i = 0; i < leds; i++)
+    {
+        gpio_init(led_pin[i]);
+        gpio_set_dir(led_pin[i], GPIO_OUT);
     }
 }
 
@@ -114,10 +140,4 @@ char verificar_tecla()
         gpio_put(linha_pins[i], 0);
     }
     return '\0'; // Retorna '\0' se nenhuma tecla for pressionada
-}
-
-// Função para reiniciar o sistema
-void reboot_sistema()
-{
-    reset_usb_boot(0, 0);
 }
