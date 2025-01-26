@@ -45,9 +45,9 @@ int main()
 
         char tecla = verificar_tecla(); // Obtém a tecla pressionada
         //funcao de teste
-       // if (stdio_usb_connected() && getchar_timeout_us(0) != PICO_ERROR_TIMEOUT)
-        //{
-        //    char tecla = getchar();
+        if (stdio_usb_connected() && getchar_timeout_us(0) != PICO_ERROR_TIMEOUT)
+       {
+            char tecla = getchar();
 
         // Utilizando switch para simplificar os casos
         switch (tecla)
@@ -83,19 +83,19 @@ int main()
             sleep_ms(100);
             break;
         case 'A':
-            sleep_ms(100);
+            ligar_todos_leds(0x000000, 0.0, pio, sm); // Desligar todos os leds
             break;
         case 'B':
             ligar_todos_leds(0x00FF00, 1.0, pio, sm); // Ligar Cor Azul 100%
             break;
         case 'C':
-            ligar_todos_leds(0x0000FF, 0.8, pio, sm); // Ligar Cor Vermelho 80%
+            ligar_todos_leds(0xFF0000, 0.8, pio, sm); // Ligar Cor Vermelho 80%
             break;
         case 'D':
-            sleep_ms(100);
+            ligar_todos_leds(0x0000FF, 0.5, pio, sm); // ligar Cor Verde 50%
             break;
         case '#':
-            sleep_ms(100); // Ação genérica para essas teclas
+            ligar_todos_leds(0xffffff, 1.0, pio, sm); // ligar Cor Branca 20%
             break;
         case '*':
             reset_usb_boot(0, 0);
@@ -105,6 +105,7 @@ int main()
             sleep_ms(100);
             break;
         }
+       }
     }
     return 0;
 }
@@ -164,10 +165,12 @@ char verificar_tecla()
 //função para ligar todos os leds 5x5
 void ligar_todos_leds(uint32_t cor, float brilho, PIO pio, uint sm)
 {
-    uint32_t adjusted_color = ((uint8_t)(((cor >> 16) & 0xFF) * brilho) << 16) |
-                              ((uint8_t)(((cor >> 8) & 0xFF) * brilho) << 8) |
-                              (uint8_t)((cor & 0xFF) * brilho);
+    //ajustar a cor do brilh
+    uint8_t red = (uint8_t)((cor >> 16) & 0xFF) * brilho;
+    uint8_t blue = (uint8_t)((cor >> 8) & 0xFF) * brilho;
+    uint8_t green = (uint8_t)(cor & 0xFF) * brilho;
 
+    uint32_t adjusted_color = (red << 16) | (blue << 8) | green;
     for (int i = 0; i < NUM_LEDS; i++)
     {
         pio_sm_put_blocking(pio, sm, adjusted_color);
