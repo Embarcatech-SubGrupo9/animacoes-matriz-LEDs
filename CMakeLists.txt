@@ -42,11 +42,16 @@ pico_set_program_version(animacoes-matriz-LEDs "0.1")
 
 # Modify the below lines to enable/disable output over UART/USB
 pico_enable_stdio_uart(animacoes-matriz-LEDs 0)
-pico_enable_stdio_usb(animacoes-matriz-LEDs 0)
+pico_enable_stdio_usb(animacoes-matriz-LEDs 1)
+
+pico_generate_pio_header(animacoes-matriz-LEDs ${CMAKE_CURRENT_LIST_DIR}/ws2812.pio)
 
 # Add the standard library to the build
 target_link_libraries(animacoes-matriz-LEDs
-        pico_stdlib)
+        pico_stdlib
+        hardware_pwm
+        hardware_pio
+        )
 
 # Add the standard include files to the build
 target_include_directories(animacoes-matriz-LEDs PRIVATE

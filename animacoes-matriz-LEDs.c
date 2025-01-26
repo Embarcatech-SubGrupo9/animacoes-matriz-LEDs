@@ -5,11 +5,17 @@
 #include "pico/bootrom.h"
 #include "hardware/watchdog.h"
 
+//Controlar leds 5x5
+#include "hardware/pio.h"
+#include "ws2812.pio.h"
+
 // Constantes
+#define LED_PIN 7
+#define NUM_LEDS 25
+
 const int colunas = 4;
 const int linhas = 4;
 const int leds = 3;
-
 const uint8_t led_pin[] = {11, 12, 13};
 const uint8_t coluna_pins[] = {20, 4, 9, 8};
 const uint8_t linha_pins[] = {16, 17, 18, 19};
@@ -17,6 +23,7 @@ const uint8_t buzzer_pin = 10;
 
 void inicializar_pinos();
 char verificar_tecla();
+void ligar_todos_leds(uint32_t cor, float brilho, PIO pio, uint sm);
 
 const char mapa_tecla[4][4] = {
     {'1', '2', '3', 'A'},
@@ -28,6 +35,10 @@ int main()
 {
     inicializar_pinos();
     stdio_init_all();
+    PIO pio = pio0;
+    int sm = 0;
+    uint offset = pio_add_program(pio, &ws2812_program);
+    ws2812_program_init(pio, sm, offset, LED_PIN, 800000, false);
 
     while (true)
     {
@@ -71,10 +82,10 @@ int main()
             sleep_ms(100);
             break;
         case 'B':
-            sleep_ms(100);
+            ligar_todos_leds(0x00FF00, 1.0, pio, sm); // Ligar Cor Azul 100%
             break;
         case 'C':
-            sleep_ms(100);
+            ligar_todos_leds(0x0000FF, 0.8, pio, sm); // Ligar Cor Vermelho 80%
             break;
         case 'D':
             sleep_ms(100);
@@ -144,4 +155,17 @@ char verificar_tecla()
         gpio_put(linha_pins[i], 0);
     }
     return '\0'; // se nenhuma tecla for pressionada
+}
+
+//função para ligar todos os leds 5x5
+void ligar_todos_leds(uint32_t cor, float brilho, PIO pio, uint sm)
+{
+    uint32_t adjusted_color = ((uint8_t)(((cor >> 16) & 0xFF) * brilho) << 16) |
+                              ((uint8_t)(((cor >> 8) & 0xFF) * brilho) << 8) |
+                              (uint8_t)((cor & 0xFF) * brilho);
+
+    for (int i = 0; i < NUM_LEDS; i++)
+    {
+        pio_sm_put_blocking(pio, sm, adjusted_color);
+    }
 }
