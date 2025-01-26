@@ -7,7 +7,7 @@
 
 //Controlar leds 5x5
 #include "hardware/pio.h"
-#include "ws2812.pio.h"
+#include "ws2818b.pio.h"
 
 // Constantes
 #define LED_PIN 7
@@ -23,7 +23,7 @@ const uint8_t buzzer_pin = 10;
 
 void inicializar_pinos();
 char verificar_tecla();
-void ligar_todos_leds(uint32_t cor, float brilho, PIO pio, uint sm);
+void ligar_todos_leds(uint8_t r,uint8_t g, uint8_t b, float brilho, PIO pio, uint sm);
 
 const char mapa_tecla[4][4] = {
     {'1', '2', '3', 'A'},
@@ -37,14 +37,14 @@ int main()
     stdio_init_all();
     PIO pio = pio0;
     int sm = 0;
-    uint offset = pio_add_program(pio, &ws2812_program);
-    ws2812_program_init(pio, sm, offset, LED_PIN, 800000, false);
+    uint offset = pio_add_program(pio, &ws2818b_program);
+    ws2818b_program_init(pio, sm, offset, LED_PIN, 800000);
 
     while (true)
     {
 
         char tecla = verificar_tecla(); // Obtém a tecla pressionada
-        //funcao de teste
+        //Modo terminal
         if (stdio_usb_connected() && getchar_timeout_us(0) != PICO_ERROR_TIMEOUT)
        {
             char tecla = getchar();
@@ -83,19 +83,19 @@ int main()
             sleep_ms(100);
             break;
         case 'A':
-            ligar_todos_leds(0x000000, 0.0, pio, sm); // Desligar todos os leds
+            ligar_todos_leds(0, 0, 0, 0.0, pio, sm); // Desligar todos os leds
             break;
         case 'B':
-            ligar_todos_leds(0x00FF00, 1.0, pio, sm); // Ligar Cor Azul 100%
+            ligar_todos_leds(0, 255, 0, 1.0, pio, sm); // Ligar Cor Azul 100%
             break;
         case 'C':
-            ligar_todos_leds(0xFF0000, 0.8, pio, sm); // Ligar Cor Vermelho 80%
+            ligar_todos_leds(255, 0, 0, 0.8, pio, sm); // Ligar Cor Vermelho 80%
             break;
         case 'D':
-            ligar_todos_leds(0x0000FF, 0.5, pio, sm); // ligar Cor Verde 50%
+            ligar_todos_leds(0, 0, 255, 0.5, pio, sm); // ligar Cor Verde 50%
             break;
         case '#':
-            ligar_todos_leds(0xffffff, 1.0, pio, sm); // ligar Cor Branca 20%
+            ligar_todos_leds(255, 255, 255, 1.0, pio, sm); // ligar Cor Branca 20%
             break;
         case '*':
             reset_usb_boot(0, 0);
@@ -163,16 +163,22 @@ char verificar_tecla()
 }
 
 //função para ligar todos os leds 5x5
-void ligar_todos_leds(uint32_t cor, float brilho, PIO pio, uint sm)
+void ligar_todos_leds(uint8_t r, uint8_t g, uint8_t b, float brilho, PIO pio, uint sm)
 {
     //ajustar a cor do brilh
-    uint8_t red = (uint8_t)((cor >> 16) & 0xFF) * brilho;
-    uint8_t blue = (uint8_t)((cor >> 8) & 0xFF) * brilho;
-    uint8_t green = (uint8_t)(cor & 0xFF) * brilho;
+    r = (uint8_t)(r * brilho);
+    g = (uint8_t)(g * brilho);
+    b = (uint8_t)(b * brilho);
 
-    uint32_t adjusted_color = (red << 16) | (blue << 8) | green;
+    /*uint32_t adjusted_color = (r << 16) | (g << 8) | b;
+
     for (int i = 0; i < NUM_LEDS; i++)
     {
         pio_sm_put_blocking(pio, sm, adjusted_color);
+    }*/
+       for (int i = 0; i < NUM_LEDS; i++) {
+        pio_sm_put_blocking(pio, sm, b); // WS2818B usa ordem GRB
+        pio_sm_put_blocking(pio, sm, r);
+        pio_sm_put_blocking(pio, sm, g);
     }
 }
