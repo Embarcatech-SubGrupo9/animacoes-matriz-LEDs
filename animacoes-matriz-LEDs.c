@@ -15,7 +15,7 @@ const uint8_t coluna_pins[] = {20, 4, 9, 8};
 const uint8_t linha_pins[] = {16, 17, 18, 19};
 const uint8_t buzzer_pin = 10;
 
-void reboot_sistema();
+void inicializar_pinos();
 char verificar_tecla();
 
 const char mapa_tecla[4][4] = {
@@ -26,6 +26,7 @@ const char mapa_tecla[4][4] = {
 
 int main()
 {
+    inicializar_pinos();
     stdio_init_all();
 
     while (true)
@@ -33,86 +34,82 @@ int main()
 
         char tecla = verificar_tecla(); // Obtém a tecla pressionada
 
-        if (tecla != '\0') // Verifica se uma tecla foi pressionada
+        // Utilizando switch para simplificar os casos
+        switch (tecla)
         {
-            // Utilizando switch para simplificar os casos
-            switch (tecla)
-            {
-            case '0':
-                sleep_ms(100);
-                break;
-            case '1':
-                sleep_ms(100);
-                break;
-            case '2':
-                sleep_ms(100);
-                break;
-            case '3':
-                sleep_ms(100);
-                break;
-            case '4':
-                sleep_ms(100);
-                break;
-            case '5':
-                sleep_ms(100);
-                break;
-            case '6':
-                sleep_ms(100);
-                break;
-            case '7':
-                sleep_ms(100);
-                break;
-            case '8':
-                sleep_ms(100);
-                break;
-            case '9':
-                sleep_ms(100);
-                break;
-            case 'A':
-                sleep_ms(100);
-                break;
-            case 'B':
-                sleep_ms(100);
-                break;
-            case 'C':
-                sleep_ms(100);
-                break;
-            case 'D':
-                sleep_ms(100);
-                break;
-            case '#':
-                sleep_ms(100); // Ação genérica para essas teclas
-                break;
-            case '*':
-                reset_usb_boot(0, 0);
-                sleep_ms(100);
-                break;
-            default:
-                sleep_ms(100);
-                break;
-            }
+        case '0':
+            sleep_ms(100);
+            break;
+        case '1':
+            sleep_ms(100);
+            break;
+        case '2':
+            sleep_ms(100);
+            break;
+        case '3':
+            sleep_ms(100);
+            break;
+        case '4':
+            sleep_ms(100);
+            break;
+        case '5':
+            sleep_ms(100);
+            break;
+        case '6':
+            sleep_ms(100);
+            break;
+        case '7':
+            sleep_ms(100);
+            break;
+        case '8':
+            sleep_ms(100);
+            break;
+        case '9':
+            sleep_ms(100);
+            break;
+        case 'A':
+            sleep_ms(100);
+            break;
+        case 'B':
+            sleep_ms(100);
+            break;
+        case 'C':
+            sleep_ms(100);
+            break;
+        case 'D':
+            sleep_ms(100);
+            break;
+        case '#':
+            sleep_ms(100); // Ação genérica para essas teclas
+            break;
+        case '*':
+            reset_usb_boot(0, 0);
+            sleep_ms(100);
+            break;
+        default:
+            sleep_ms(100);
+            break;
         }
-        sleep_ms(100);
     }
+    return 0;
 }
 
 // Função para inicializar os pinos
 void inicializar_pinos()
-{ // Inicializando as colunas do teclado matricial
+{
 
-    for (int i = 0; i < colunas; i++)
-    {
-        gpio_init(coluna_pins[i]);
-        gpio_set_dir(coluna_pins[i], GPIO_IN);
-        gpio_pull_down(coluna_pins[i]);
-    }
-
-    // Inicializando as linhas do teclado matricial
     for (int i = 0; i < linhas; i++)
     {
         gpio_init(linha_pins[i]);
         gpio_set_dir(linha_pins[i], GPIO_OUT);
-        gpio_put(linha_pins[i], 0);
+        gpio_put(linha_pins[i], 0); // Inicialmente, todas as linhas devem estar em nível baixo
+    }
+
+    for (int j = 0; j < colunas; j++)
+    {
+        gpio_init(coluna_pins[j]);
+        gpio_set_dir(coluna_pins[j], GPIO_IN);
+        gpio_pull_down(coluna_pins[j]); // Ative o pull-down
     }
 
     // Inicializando os leds green, blue e red
@@ -129,15 +126,22 @@ char verificar_tecla()
     for (int i = 0; i < linhas; i++)
     {
         gpio_put(linha_pins[i], 1);
+        /* O uso do sleep_us(200) fez o código funcionar porque ele permite tempo suficiente
+        para estabilização dos sinais elétricos no teclado matricial.
+        Isso está relacionado à forma como os sinais são gerados e lidos nos circuitos digitais. */
+        sleep_us(200); // Pequeno atraso para estabilização
         for (int j = 0; j < colunas; j++)
         {
+            /*        bool estado = gpio_get(coluna_pins[j]); */
+            /*            printf("Linha %d, Coluna %d: %d\n", i, j, estado); */
             if (gpio_get(coluna_pins[j]))
             {
+                printf("Tecla detectada em linha %d e coluna %d\n", i, j);
                 gpio_put(linha_pins[i], 0);
                 return mapa_tecla[i][j];
             }
         }
         gpio_put(linha_pins[i], 0);
     }
-    return '\0'; // Retorna '\0' se nenhuma tecla for pressionada
+    return '\0'; // se nenhuma tecla for pressionada
 }
