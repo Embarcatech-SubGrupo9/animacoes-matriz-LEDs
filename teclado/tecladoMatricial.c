@@ -13,12 +13,11 @@
 const uint8_t coluna_pins[] = {20, 4, 9, 8};
 const uint8_t linha_pins[] = {16, 17, 18, 19};
 
-static const char mapa_tecla[4][4] = {
-    {'1', '2', '3', 'A'},
-    {'4', '5', '6', 'B'},
-    {'7', '8', '9', 'C'},
-    {'*', '0', '#', 'D'}};
-
+const char mapa_tecla[4][4] = {
+    {'1', '2', 'A', '3'},
+    {'4', '5', 'B', '6'},
+    {'7', '8', 'C', '9'},
+    {'*', '0', 'D', '#'}};
 // Função para inicializar os pinos
 void inicializar_pinos()
 {
