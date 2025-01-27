@@ -1,4 +1,4 @@
 [wokwi]
 version = 1
-firmware = 'build/animacoes-matriz-LEDs.uf2'
+firmware = 'build/animacoes-matriz-LEDs.hex'
 elf = 'build/animacoes-matriz-LEDs.elf'
