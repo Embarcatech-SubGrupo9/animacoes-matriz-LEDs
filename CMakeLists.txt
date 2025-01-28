@@ -41,6 +41,7 @@ add_executable(animacoes-matriz-LEDs
          animacoes-matriz-LEDs.c 
          teclado/tecladoMatricial.c
          animacoes/sabre.c
+         buzzer/buzzer.c
 )
 
 pico_set_program_name(animacoes-matriz-LEDs "animacoes-matriz-LEDs")

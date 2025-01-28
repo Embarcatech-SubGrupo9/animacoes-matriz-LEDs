@@ -7,6 +7,7 @@
 
 #include "teclado/tecladoMatricial.h"
 #include "animacoes/animacoes.h"
+#include "buzzer/buzzer.h"
 
 // Controlar leds 5x5
 #include "hardware/pio.h"
@@ -29,6 +30,7 @@ int main()
 {
     inicializar_pinos();
     stdio_init_all();
+    inicializa_buzzer_pwm(buzzer_pin);
     PIO pio = pio0;
     int sm = 0;
     uint offset = pio_add_program(pio, &ws2818b_program);
@@ -150,6 +152,6 @@ void animacao_pio(double desenho[5][25][3], PIO pio, uint sm, uint tempo_frame){
     
     for(int j=0; j<NUM_FRAMES; j++){
         desenhaRBG(desenho[j], pio, sm);
-        sleep_ms(tempo_frame);
+        toca_nota(buzzer_pin, notas[j], tempo_frame);
     }
 }
