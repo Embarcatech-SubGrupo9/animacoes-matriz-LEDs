@@ -50,8 +50,7 @@ int main()
             switch (tecla)
             {
             case '0':
-                animacao_pio(animacao_sabre, pio, sm, 500);
-                ligar_todos_leds(0, 0, 0, 0.0, pio, sm); // Desligar todos os leds
+                sleep_ms(100);
                 break;
             case '1':
                 sleep_ms(100);
@@ -75,7 +74,8 @@ int main()
                 sleep_ms(100);
                 break;
             case '8':
-                sleep_ms(100);
+                animacao_pio(animacao_sabre, pio, sm, 500);
+                ligar_todos_leds(0, 0, 0, 0.0, pio, sm); // Desligar todos os leds
                 break;
             case '9':
                 sleep_ms(100);
