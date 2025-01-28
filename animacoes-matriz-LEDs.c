@@ -22,8 +22,8 @@ const uint8_t buzzer_pin = 10;
 void inicializar_pinos();
 char verificar_tecla();
 void ligar_todos_leds(uint8_t r, uint8_t g, uint8_t b, float brilho, PIO pio, uint sm);
-uint32_t matriz_rgb(double b, double r, double g);
-void desenha_pio(double *desenho, PIO pio, uint sm, uint tempo_frame);
+void animacao_pio(double desenho[5][25][3], PIO pio, uint sm, uint tempo_frame);
+void desenhaRBG(double frame[][3], PIO pio, uint sm);
 
 int main()
 {
@@ -48,7 +48,8 @@ int main()
             switch (tecla)
             {
             case '0':
-                desenha_pio(animacao_sabre, pio, sm, 500);
+                animacao_pio(animacao_sabre, pio, sm, 500);
+                ligar_todos_leds(0, 0, 0, 0.0, pio, sm); // Desligar todos os leds
                 break;
             case '1':
                 sleep_ms(100);
@@ -127,23 +128,28 @@ void ligar_todos_leds(uint8_t r, uint8_t g, uint8_t b, float brilho, PIO pio, ui
     }
 }
 
-// função para definição da intensidade dos leds
-uint32_t matriz_rgb(double r, double g, double b)
-{
-  unsigned char R, G, B;
-  R = r * 255;
-  G = g * 255;
-  B = b * 255;
-  return (G << 24) | (R << 16) | (B << 8);
+//Função responsável por acionar os leds da matriz.
+void desenhaRBG(double frame[][3], PIO pio, uint sm){
+    for(uint8_t i = 0; i < NUM_LEDS; i++){
+        uint8_t BLUE = 0, RED = 0, GREEN = 0;
+
+        RED = (uint8_t) (255 * frame[24-i][0]);
+        GREEN = (uint8_t) (255 * frame[24-i][1]);
+        BLUE = (uint8_t) (255 * frame[24-i][2]);
+
+        pio_sm_put_blocking(pio, sm, GREEN);
+        pio_sm_put_blocking(pio, sm, RED);
+        pio_sm_put_blocking(pio, sm, BLUE);
+    }
 }
 
 // função para desenhar a animação
-void desenha_pio(double *desenho, PIO pio, uint sm, uint tempo_frame){
+void animacao_pio(double desenho[5][25][3], PIO pio, uint sm, uint tempo_frame){
     int valor_led;
+    uint8_t r, g, b;
+    
     for(int j=0; j<NUM_FRAMES; j++){
-        for(int i=0; i<NUM_LEDS; i++){
-            valor_led = matriz_rgb(desenho[j][i]);
-            pio_sm_put_blocking(pio, sm, valor_led);
-        }
+        desenhaRBG(desenho[j], pio, sm);
+        sleep_ms(tempo_frame);
     }
 }
