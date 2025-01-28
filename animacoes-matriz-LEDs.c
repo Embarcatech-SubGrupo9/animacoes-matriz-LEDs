@@ -16,16 +16,22 @@
 #define LED_PIN 7
 #define NUM_LEDS 25
 
+const char tecla[4][4] = {
+    {'1', '2', '3', 'A'},
+    {'4', '5', '6', 'B'},
+    {'7', '8', '9', 'C'},
+    {'*', '0', '#', 'D'}};
+
 const uint8_t buzzer_pin = 10;
 
-som_grave () {
+void som_grave () {
         gpio_put(buzzer_pin, true);
         sleep_ms(3);
         gpio_put(buzzer_pin, false);
         sleep_ms(3);
 }
 
-som_agudo () {
+void som_agudo () {
         gpio_put(buzzer_pin, true);
         sleep_ms(1);
         gpio_put(buzzer_pin, false);
@@ -194,6 +200,37 @@ double frame_branco [NUM_LEDS] = { 0.0, 0.0, 0.0, 0.0, 0.0,
                                    0.0, 0.0, 0.0, 0.0, 0.0,
                                    0.0, 0.0, 0.0, 0.0, 0.0};
 
+//Sexta animação, coração.
+double frame_coracao1 [NUM_LEDS] = {0.0, 0.0, 0.0, 0.0, 0.0,
+			                        0.0, 0.0, 0.0, 0.0, 0.0, 
+                                    0.0, 0.0, 0.0, 0.0, 0.0,
+                                    0.0, 0.0, 0.0, 0.0, 0.0,
+                                    0.0, 0.0, 0.0, 0.0, 0.0};
+
+double frame_coracao2 [NUM_LEDS] = {0.0, 0.0, 0.0, 0.0, 0.0,
+			                        0.0, 0.0, 0.0, 0.0, 0.0, 
+                                    1.0, 0.0, 0.0, 0.0, 1.0,
+                                    1.0, 0.0, 1.0, 0.0, 1.0,
+                                    0.0, 1.0, 0.0, 1.0, 0.0};
+
+double frame_coracao3 [NUM_LEDS] = {0.0, 0.0, 1.0, 0.0, 0.0,
+			                        0.0, 1.0, 0.0, 1.0, 0.0, 
+                                    1.0, 0.0, 0.0, 0.0, 1.0,
+                                    1.0, 0.0, 0.0, 0.0, 1.0,
+                                    0.0, 0.0, 0.0, 0.0, 0.0};
+
+double frame_coracao4 [NUM_LEDS] = {0.0, 0.0, 1.0, 0.0, 0.0,
+			                        0.0, 1.0, 0.0, 1.0, 0.0, 
+                                    1.0, 0.0, 0.0, 0.0, 1.0,
+                                    1.0, 0.0, 1.0, 0.0, 1.0,
+                                    0.0, 1.0, 1.0, 1.0, 0.0};
+
+double frame_coracao5 [NUM_LEDS] = {0.0, 0.0, 1.0, 0.0, 0.0,
+			                        0.0, 1.0, 1.0, 1.0, 0.0, 
+                                    1.0, 1.0, 1.0, 1.0, 1.0,
+                                    1.0, 1.0, 1.0, 1.0, 1.0,
+                                    0.0, 1.0, 0.0, 1.0, 0.0};
+
 void inicializar_pinos();
 char verificar_tecla();
 void ligar_todos_leds(uint8_t r, uint8_t g, uint8_t b, float brilho, PIO pio, uint sm);
@@ -249,6 +286,7 @@ int main()
                 sleep_ms(100);
                 break;
             case '6':
+                selececao_animacao(6, pio, sm);
                 sleep_ms(100);
                 break;
             case '7':
@@ -264,6 +302,7 @@ int main()
                 ligar_todos_leds(0, 0, 0, 0.0, pio, sm); // Desligar todos os leds
                 break;
             case 'B':
+            som_agudo();
                 ligar_todos_leds(0, 255, 0, 1.0, pio, sm); // Ligar Cor Azul 100%
                 som_grave();
                 break;
@@ -421,4 +460,23 @@ void selececao_animacao(uint8_t escolha, PIO pio, uint sm){
         apagar_led(frame_branco, pio, sm);
         sleep_ms(500);
     }
+        else if(escolha == 6){
+        for(uint8_t i = 0; i < 3; i++){
+            animacaoRBG(frame_coracao1, pio, sm, 255, 0, 0);
+			sleep_ms(500);
+			animacaoRBG(frame_coracao2, pio, sm, 255, 0, 0);
+			sleep_ms(500);
+			animacaoRBG(frame_coracao2, pio, sm, 255, 0, 0);
+			sleep_ms(500);
+			animacaoRBG(frame_coracao3, pio, sm, 255, 0, 0);
+			sleep_ms(350);
+			animacaoRBG(frame_coracao4, pio, sm, 255, 0, 0);
+			sleep_ms(500);
+            som_grave();
+			animacaoRBG(frame_coracao4, pio, sm, 255, 0, 0);
+			sleep_ms(500);
+			som_agudo();
+            animacaoRBG(frame_coracao5, pio, sm, 255, 0, 0);
+        }
+}
 }
