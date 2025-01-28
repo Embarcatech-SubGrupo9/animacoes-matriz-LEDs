@@ -1,8 +1,12 @@
 #include "buzzer.h"
 
 // Notas iniciais da música tema de Star Wars
-const uint notas[] = {
+uint notas[] = {
     330, 330, 330, 262, 392
+};
+
+uint notas2[] = {
+    500, 500, 500, 500, 500
 };
 
 // Inicializa o PWM no pino do buzzer

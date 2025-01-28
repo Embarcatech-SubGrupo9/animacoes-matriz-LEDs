@@ -23,7 +23,7 @@ const uint8_t buzzer_pin = 10;
 void inicializar_pinos();
 char verificar_tecla();
 void ligar_todos_leds(uint8_t r, uint8_t g, uint8_t b, float brilho, PIO pio, uint sm);
-void animacao_pio(double desenho[5][25][3], PIO pio, uint sm, uint tempo_frame);
+void animacao_pio(double desenho[5][25][3], PIO pio, uint sm, uint tempo_frame, uint *nota);
 void desenhaRBG(double frame[][3], PIO pio, uint sm);
 
 int main()
@@ -43,7 +43,6 @@ int main()
         char tecla = verificar_tecla(); // Obtém a tecla pressionada
         // Colocando esse if não vai entrar toda hora no printf, então não vai imprimir toda hora.
         if (tecla != '\0')
-
         {
             printf("Tecla pressionada: %c\n", tecla);
             // Utilizando switch para simplificar os casos
@@ -74,11 +73,12 @@ int main()
                 sleep_ms(100);
                 break;
             case '8':
-                animacao_pio(animacao_sabre, pio, sm, 500);
+                animacao_pio(animacao_sabre, pio, sm, 500, notas);
                 ligar_todos_leds(0, 0, 0, 0.0, pio, sm); // Desligar todos os leds
                 break;
             case '9':
-                sleep_ms(100);
+                animacao_pio(animacao_batimentos, pio, sm, 500, notas2);
+                ligar_todos_leds(0, 0, 0, 0.0, pio, sm); // Desligar todos os leds
                 break;
             case 'A':
                 ligar_todos_leds(0, 0, 0, 0.0, pio, sm); // Desligar todos os leds
@@ -146,12 +146,12 @@ void desenhaRBG(double frame[][3], PIO pio, uint sm){
 }
 
 // função para desenhar a animação
-void animacao_pio(double desenho[5][25][3], PIO pio, uint sm, uint tempo_frame){
+void animacao_pio(double desenho[5][25][3], PIO pio, uint sm, uint tempo_frame, uint *nota){
     int valor_led;
     uint8_t r, g, b;
     
     for(int j=0; j<NUM_FRAMES; j++){
         desenhaRBG(desenho[j], pio, sm);
-        toca_nota(buzzer_pin, notas[j], tempo_frame);
+        toca_nota(buzzer_pin, nota[j], tempo_frame);
     }
 }
