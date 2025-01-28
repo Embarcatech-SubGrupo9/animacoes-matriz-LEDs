@@ -315,14 +315,14 @@ int main()
                 som_grave();
                 break;
             case 'C':
-                ligar_todos_leds(255, 0, 0, 0.8, pio, sm); // Ligar Cor Vermelho 80%
+                ligar_todos_leds(205, 0, 0, 0.8, pio, sm); // Ligar Cor Vermelho 80%
                 som_agudo();
                 break;
             case 'D':
-                ligar_todos_leds(0, 0, 255, 0.5, pio, sm); // ligar Cor Verde 50%
+                ligar_todos_leds(0, 0, 128, 0.5, pio, sm); // ligar Cor Verde 50%
                 break;
             case '#':
-                ligar_todos_leds(255, 255, 255, 1.0, pio, sm); // ligar Cor Branca 20%
+                ligar_todos_leds(128, 128, 128, 1.0, pio, sm); // ligar Cor Branca 20% ( Abaixo disso o led volta a ficar com força maxima = 255³)
                 break;
             case '*':
                 reset_usb_boot(0, 0);
