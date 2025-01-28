@@ -16,12 +16,6 @@
 #define LED_PIN 7
 #define NUM_LEDS 25
 
-const char tecla[4][4] = {
-    {'1', '2', '3', 'A'},
-    {'4', '5', '6', 'B'},
-    {'7', '8', '9', 'C'},
-    {'*', '0', '#', 'D'}};
-
 const uint8_t buzzer_pin = 10;
 
 void som_grave () {
