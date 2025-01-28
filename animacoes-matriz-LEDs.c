@@ -225,6 +225,19 @@ double frame_coracao5 [NUM_LEDS] = {0.0, 0.0, 1.0, 0.0, 0.0,
                                     1.0, 1.0, 1.0, 1.0, 1.0,
                                     0.0, 1.0, 0.0, 1.0, 0.0};
 
+//sétima animação, Pacman.
+double frame_pacman [NUM_LEDS] =   {1.0, 1.0, 1.0, 1.0, 1.0,
+			                        1.0, 1.0, 1.0, 1.0, 0.0, 
+                                    0.0, 0.0, 0.0, 1.0, 1.0,
+                                    1.0, 1.0, 1.0, 1.0, 0.0,
+                                    1.0, 1.0, 1.0, 1.0, 1.0};
+
+double frame_pacman_olhos [NUM_LEDS] = {1.0, 1.0, 1.0, 1.0, 1.0,
+			                            1.0, 1.0, 1.0, 1.0, 0.0, 
+                                        0.0, 0.0, 0.0, 1.0, 1.0,
+                                        1.0, 0.0, 1.0, 1.0, 0.0,
+                                        1.0, 1.0, 1.0, 1.0, 1.0};
+
 void inicializar_pinos();
 char verificar_tecla();
 void ligar_todos_leds(uint8_t r, uint8_t g, uint8_t b, float brilho, PIO pio, uint sm);
@@ -284,6 +297,7 @@ int main()
                 sleep_ms(100);
                 break;
             case '7':
+                selececao_animacao(7, pio, sm);
                 sleep_ms(100);
                 break;
             case '8':
@@ -472,5 +486,27 @@ void selececao_animacao(uint8_t escolha, PIO pio, uint sm){
 			som_agudo();
             animacaoRBG(frame_coracao5, pio, sm, 255, 0, 0);
         }
+}
+else if(escolha == 7){
+  for(uint8_t i = 0; i < 6; i++){
+    // Animação das cores
+    animacaoRBG(frame_pacman_olhos, pio, sm, 255, 0, 0); // Vermelho
+    animacaoRBG(frame_pacman, pio, sm, 255, 0, 0); 
+    sleep_ms(300);
+    animacaoRBG(frame_pacman_olhos, pio, sm, 0, 255, 0); // Verde
+    animacaoRBG(frame_pacman, pio, sm, 0, 255, 0); 
+    sleep_ms(300);
+    animacaoRBG(frame_pacman_olhos, pio, sm, 0, 0, 255); // Azul
+    animacaoRBG(frame_pacman, pio, sm, 0, 0, 255); 
+    sleep_ms(300);
+    animacaoRBG(frame_pacman_olhos, pio, sm, 150, 150, 150); // Cinza
+    animacaoRBG(frame_pacman, pio, sm, 150, 150, 150); 
+    sleep_ms(300);
+    animacaoRBG(frame_pacman_olhos, pio, sm, 255, 150, 0); // Laranja
+    animacaoRBG(frame_pacman, pio, sm, 255, 150, 0); 
+    sleep_ms(300);
+  }
+    apagar_led(frame_branco, pio, sm);
+    sleep_ms(500);
 }
 }
