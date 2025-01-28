@@ -3,6 +3,7 @@
 #include <string.h>
 #include "pico/stdlib.h"
 #include "pico/bootrom.h"
+#include "hardware/gpio.h"
 #include "hardware/watchdog.h"
 
 #include "teclado/tecladoMatricial.h"
@@ -16,6 +17,20 @@
 #define NUM_LEDS 25
 
 const uint8_t buzzer_pin = 10;
+
+som_grave () {
+        gpio_put(buzzer_pin, true);
+        sleep_ms(3);
+        gpio_put(buzzer_pin, false);
+        sleep_ms(3);
+}
+
+som_agudo () {
+        gpio_put(buzzer_pin, true);
+        sleep_ms(1);
+        gpio_put(buzzer_pin, false);
+        sleep_ms(1);
+}
 
 //Primeira animação, preenchimento.
 double animacao01_frame01 [NUM_LEDS] = { 0.0, 0.0, 0.0, 0.0, 0.0,
@@ -190,6 +205,8 @@ int main()
 {
     inicializar_pinos();
     stdio_init_all();
+    gpio_init(buzzer_pin);
+    gpio_set_dir(buzzer_pin, GPIO_OUT);
     PIO pio = pio0;
     int sm = 0;
     uint offset = pio_add_program(pio, &ws2818b_program);
@@ -248,9 +265,11 @@ int main()
                 break;
             case 'B':
                 ligar_todos_leds(0, 255, 0, 1.0, pio, sm); // Ligar Cor Azul 100%
+                som_grave();
                 break;
             case 'C':
                 ligar_todos_leds(255, 0, 0, 0.8, pio, sm); // Ligar Cor Vermelho 80%
+                som_agudo();
                 break;
             case 'D':
                 ligar_todos_leds(0, 0, 255, 0.5, pio, sm); // ligar Cor Verde 50%
@@ -292,6 +311,8 @@ void ligar_todos_leds(uint8_t r, uint8_t g, uint8_t b, float brilho, PIO pio, ui
         pio_sm_put_blocking(pio, sm, g);
     }
 }
+
+
 
 //Função responsável por desligar todos os leds da matriz.
 void apagar_led(double *frame, PIO pio, uint sm){
