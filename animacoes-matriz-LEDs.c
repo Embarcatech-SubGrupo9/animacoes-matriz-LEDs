@@ -6,6 +6,7 @@
 #include "hardware/watchdog.h"
 
 #include "teclado/tecladoMatricial.h"
+#include "animacoes/animacoes.h"
 
 // Controlar leds 5x5
 #include "hardware/pio.h"
@@ -47,7 +48,7 @@ int main()
             switch (tecla)
             {
             case '0':
-                sleep_ms(100);
+                desenha_pio(animacao_sabre, pio, sm, 500);
                 break;
             case '1':
                 sleep_ms(100);
@@ -138,10 +139,11 @@ uint32_t matriz_rgb(double r, double g, double b)
 
 // função para desenhar a animação
 void desenha_pio(double *desenho, PIO pio, uint sm, uint tempo_frame){
-    int bloco_leds;
+    int valor_led;
     for(int j=0; j<NUM_FRAMES; j++){
         for(int i=0; i<NUM_LEDS; i++){
-            bloco_leds = matriz_rgb(desenho[j][i]);
+            valor_led = matriz_rgb(desenho[j][i]);
+            pio_sm_put_blocking(pio, sm, valor_led);
         }
     }
 }
