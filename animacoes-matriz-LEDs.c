@@ -14,12 +14,15 @@
 // Constantes
 #define LED_PIN 7
 #define NUM_LEDS 25
+#define NUM_FRAMES 5
 
 const uint8_t buzzer_pin = 10;
 
 void inicializar_pinos();
 char verificar_tecla();
 void ligar_todos_leds(uint8_t r, uint8_t g, uint8_t b, float brilho, PIO pio, uint sm);
+uint32_t matriz_rgb(double b, double r, double g);
+void desenha_pio(double *desenho, PIO pio, uint sm, uint tempo_frame);
 
 int main()
 {
@@ -80,7 +83,7 @@ int main()
                 ligar_todos_leds(0, 255, 0, 1.0, pio, sm); // Ligar Cor Azul 100%
                 break;
             case 'C':
-                ligar_todos_leds(255, 0, 0, 0.8, pio, sm); // Ligar Cor Vermelho 80%
+                ligar_todos_leds(255, 0, 0, 1.0, pio, sm); // Ligar Cor Vermelho 80%
                 break;
             case 'D':
                 ligar_todos_leds(0, 0, 255, 0.5, pio, sm); // ligar Cor Verde 50%
@@ -120,5 +123,25 @@ void ligar_todos_leds(uint8_t r, uint8_t g, uint8_t b, float brilho, PIO pio, ui
         pio_sm_put_blocking(pio, sm, b); // WS2818B usa ordem GRB
         pio_sm_put_blocking(pio, sm, r);
         pio_sm_put_blocking(pio, sm, g);
+    }
+}
+
+// função para definição da intensidade dos leds
+uint32_t matriz_rgb(double r, double g, double b)
+{
+  unsigned char R, G, B;
+  R = r * 255;
+  G = g * 255;
+  B = b * 255;
+  return (G << 24) | (R << 16) | (B << 8);
+}
+
+// função para desenhar a animação
+void desenha_pio(double *desenho, PIO pio, uint sm, uint tempo_frame){
+    int bloco_leds;
+    for(int j=0; j<NUM_FRAMES; j++){
+        for(int i=0; i<NUM_LEDS; i++){
+            bloco_leds = matriz_rgb(desenho[j][i]);
+        }
     }
 }
