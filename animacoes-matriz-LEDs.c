@@ -18,6 +18,12 @@
 
 const uint8_t buzzer_pin = 10;
 
+som_grave () {
+        gpio_put(buzzer_pin, true);
+        sleep_ms(3);
+        gpio_put(buzzer_pin, false);
+        sleep_ms(3);
+}
 
 som_agudo () {
         gpio_put(buzzer_pin, true);
