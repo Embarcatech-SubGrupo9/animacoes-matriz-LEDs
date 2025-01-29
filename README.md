@@ -87,3 +87,8 @@ Figura 2 – Matriz de LEDs 5x5 WS2812
    ```bash
    animacoes-matriz-LEDs.c
    ```
+
+   ### Link para o vídeo:
+
+[Apresentação do Projeto](https://www.dropbox.com/scl/fi/4l90wj1f2qzk3ncintjkx/video_2025-01-28_23-24-17.mp4?rlkey=rpsj8l56v9lyy8bkshf19pxdz&st=f0hsnnak&dl=0)
+
