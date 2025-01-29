@@ -21,12 +21,6 @@ Este projeto visa gerar animações em uma matriz de LEDs WS2812 5x5 com o auxí
 | Coluna 3 do teclado                    | GP17         |
 | Coluna 4 do teclado                    | GP16         |
 
-![Teclado Matricial 4x4](path-to-keypad-image)  
-Figura 1 – Teclado matricial 4x4
-
-![Matriz de LEDs 5x5](path-to-led-matrix-image)  
-Figura 2 – Matriz de LEDs 5x5 WS2812
-
 ## 👥 Equipe de Desenvolvimento
 
 - **Líder**: *Fernando Hali Santos Andrade*  
