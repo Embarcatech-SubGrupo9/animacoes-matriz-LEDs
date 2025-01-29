@@ -36,64 +36,6 @@ void inicializar_pinos()
     }
 }
 
-/* char verificar_tecla()
-{
-    // Itera sobre todas as linhas
-    for (int i = 0; i < linhas; i++)
-    {
-        // Ativa apenas a linha atual
-        gpio_put(linha_pins[i], 1);
-        sleep_us(200); // Atraso para estabilização
-
-        // Itera sobre todas as colunas para verificar se há tecla pressionada
-        for (int j = 0; j < colunas; j++)
-        {
-            if (gpio_get(coluna_pins[j]))
-            {
-                printf("Tecla detectada em linha %d e coluna %d\n", i, j);
-
-                // Desativa a linha antes de retornar o caractere correspondente
-                gpio_put(linha_pins[i], 0);
-                return mapa_tecla[i][j];
-            }
-        }
-
-        // Desativa a linha após verificar todas as colunas
-        gpio_put(linha_pins[i], 0);
-    }
-
-    // Retorna '\0' caso nenhuma tecla tenha sido pressionada
-    return '\0';
-} */
-/*
-// Função para verificar qual tecla foi pressionada
-char verificar_tecla()
-{
-    // Reseta todas as colunas
-    for (int i = 0; i < 4; i++)
-    {
-        gpio_put(coluna_pins[i], 1);
-    }
-
-    for (int coluna = 0; coluna < 4; coluna++)
-    {
-        gpio_put(coluna_pins[coluna], 0); // Ativa a coluna atual
-
-        for (int linha = 0; linha < 4; linha++)
-        {
-            if (gpio_get(linha_pins[linha]) == 0)
-            {                                     // Detecta pressão na linha
-                gpio_put(coluna_pins[coluna], 1); // Desativa a coluna atual
-                return mapa_tecla[linha][coluna]; // Retorna imediatamente
-            }
-        }
-
-        gpio_put(coluna_pins[coluna], 1); // Desativa a coluna atual
-    }
-
-    return '\0'; // Nenhuma tecla pressionada
-} */
-
 // Aguarda até que todas as teclas sejam soltas
 void aguardar_solta()
 {
