@@ -6,6 +6,12 @@ Geração de animações em uma matriz de LEDs 5x5 utilizando Raspberry Pi Pico 
 
 Este projeto visa gerar animações em uma matriz de LEDs WS2812 5x5 com o auxílio de um teclado matricial 4x4 e Raspberry Pi Pico W. As animações são acionadas através das teclas de 0 a 9, enquanto teclas como A, B, C, D, e # controlam as cores da matriz. O projeto também integra um buzzer opcional para efeitos sonoros.
 
+
+### 📹 Link para o vídeo:
+
+[Apresentação do Projeto](https://www.dropbox.com/scl/fi/4l90wj1f2qzk3ncintjkx/video_2025-01-28_23-24-17.mp4?rlkey=rpsj8l56v9lyy8bkshf19pxdz&st=f0hsnnak&dl=0)
+
+
 ## 🔌 Conexões de Hardware
 
 ### Esquema de Conexões
@@ -81,8 +87,4 @@ Este projeto visa gerar animações em uma matriz de LEDs WS2812 5x5 com o auxí
    ```bash
    animacoes-matriz-LEDs.c
    ```
-
-   ### Link para o vídeo:
-
-[Apresentação do Projeto](https://www.dropbox.com/scl/fi/4l90wj1f2qzk3ncintjkx/video_2025-01-28_23-24-17.mp4?rlkey=rpsj8l56v9lyy8bkshf19pxdz&st=f0hsnnak&dl=0)
 
