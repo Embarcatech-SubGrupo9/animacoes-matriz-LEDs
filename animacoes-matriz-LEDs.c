@@ -7,6 +7,8 @@
 #include "hardware/watchdog.h"
 
 #include "teclado/tecladoMatricial.h"
+#include "animacoes/animacoes.h"
+#include "buzzer/buzzer.h"
 
 // Controlar leds 5x5
 #include "hardware/pio.h"
@@ -15,6 +17,7 @@
 // Constantes
 #define LED_PIN 7
 #define NUM_LEDS 25
+#define NUM_FRAMES 5
 
 const uint8_t buzzer_pin = 10;
 
@@ -241,6 +244,8 @@ double frame_pacman_olhos [NUM_LEDS] = {1.0, 1.0, 1.0, 1.0, 1.0,
 void inicializar_pinos();
 char verificar_tecla();
 void ligar_todos_leds(uint8_t r, uint8_t g, uint8_t b, float brilho, PIO pio, uint sm);
+void animacao_pio(double desenho[5][25][3], PIO pio, uint sm, uint tempo_frame, uint *nota);
+void desenhaRBG(double frame[][3], PIO pio, uint sm);
 void apagar_led(double *frame, PIO pio, uint sm);
 void animacaoRBG(double *frame, PIO pio, uint sm, uint8_t red, uint8_t green, uint8_t blue);
 void selececao_animacao(uint8_t escolha, PIO pio, uint sm);
@@ -249,8 +254,7 @@ int main()
 {
     inicializar_pinos();
     stdio_init_all();
-    gpio_init(buzzer_pin);
-    gpio_set_dir(buzzer_pin, GPIO_OUT);
+    inicializa_buzzer_pwm(buzzer_pin);
     PIO pio = pio0;
     int sm = 0;
     uint offset = pio_add_program(pio, &ws2818b_program);
@@ -263,7 +267,6 @@ int main()
         char tecla = verificar_tecla(); // Obtém a tecla pressionada
         // Colocando esse if não vai entrar toda hora no printf, então não vai imprimir toda hora.
         if (tecla != '\0')
-
         {
             printf("Tecla pressionada: %c\n", tecla);
             // Utilizando switch para simplificar os casos
@@ -301,16 +304,18 @@ int main()
                 sleep_ms(100);
                 break;
             case '8':
-                sleep_ms(100);
+                animacao_pio(animacao_sabre, pio, sm, 500, notas);
+                ligar_todos_leds(0, 0, 0, 0.0, pio, sm); // Desligar todos os leds
                 break;
             case '9':
-                sleep_ms(100);
+                animacao_pio(animacao_batimentos, pio, sm, 500, notas2);
+                ligar_todos_leds(0, 0, 0, 0.0, pio, sm); // Desligar todos os leds
                 break;
             case 'A':
                 ligar_todos_leds(0, 0, 0, 0.0, pio, sm); // Desligar todos os leds
                 break;
             case 'B':
-            som_agudo();
+                som_agudo();
                 ligar_todos_leds(0, 255, 0, 1.0, pio, sm); // Ligar Cor Azul 100%
                 som_grave();
                 break;
@@ -359,7 +364,20 @@ void ligar_todos_leds(uint8_t r, uint8_t g, uint8_t b, float brilho, PIO pio, ui
     }
 }
 
+//Função responsável por acionar os leds da matriz.
+void desenhaRBG(double frame[][3], PIO pio, uint sm){
+    for(uint8_t i = 0; i < NUM_LEDS; i++){
+        uint8_t BLUE = 0, RED = 0, GREEN = 0;
 
+        RED = (uint8_t) (255 * frame[24-i][0]);
+        GREEN = (uint8_t) (255 * frame[24-i][1]);
+        BLUE = (uint8_t) (255 * frame[24-i][2]);
+        
+        pio_sm_put_blocking(pio, sm, GREEN);
+        pio_sm_put_blocking(pio, sm, RED);
+        pio_sm_put_blocking(pio, sm, BLUE);
+    }
+}
 
 //Função responsável por desligar todos os leds da matriz.
 void apagar_led(double *frame, PIO pio, uint sm){
@@ -379,10 +397,21 @@ void animacaoRBG(double *frame, PIO pio, uint sm, uint8_t red, uint8_t green, ui
         BLUE = (uint8_t) (blue * frame[i]);
         RED = (uint8_t) (red * frame[i]);
         GREEN = (uint8_t) (green * frame[i]);
-
+        
         pio_sm_put_blocking(pio, sm, GREEN);
         pio_sm_put_blocking(pio, sm, RED);
         pio_sm_put_blocking(pio, sm, BLUE);
+    }
+}
+
+// função para desenhar a animação
+void animacao_pio(double desenho[5][25][3], PIO pio, uint sm, uint tempo_frame, uint *nota){
+    int valor_led;
+    uint8_t r, g, b;
+    
+    for(int j=0; j<NUM_FRAMES; j++){
+        desenhaRBG(desenho[j], pio, sm);
+        toca_nota(buzzer_pin, nota[j], tempo_frame);
     }
 }
 
@@ -468,45 +497,45 @@ void selececao_animacao(uint8_t escolha, PIO pio, uint sm){
         apagar_led(frame_branco, pio, sm);
         sleep_ms(500);
     }
-        else if(escolha == 6){
+    else if(escolha == 6){
         for(uint8_t i = 0; i < 3; i++){
             animacaoRBG(frame_coracao1, pio, sm, 255, 0, 0);
-			sleep_ms(500);
-			animacaoRBG(frame_coracao2, pio, sm, 255, 0, 0);
-			sleep_ms(500);
-			animacaoRBG(frame_coracao2, pio, sm, 255, 0, 0);
-			sleep_ms(500);
-			animacaoRBG(frame_coracao3, pio, sm, 255, 0, 0);
-			sleep_ms(350);
-			animacaoRBG(frame_coracao4, pio, sm, 255, 0, 0);
-			sleep_ms(500);
+            sleep_ms(500);
+            animacaoRBG(frame_coracao2, pio, sm, 255, 0, 0);
+            sleep_ms(500);
+            animacaoRBG(frame_coracao2, pio, sm, 255, 0, 0);
+            sleep_ms(500);
+            animacaoRBG(frame_coracao3, pio, sm, 255, 0, 0);
+            sleep_ms(350);
+            animacaoRBG(frame_coracao4, pio, sm, 255, 0, 0);
+            sleep_ms(500);
             som_grave();
-			animacaoRBG(frame_coracao4, pio, sm, 255, 0, 0);
-			sleep_ms(500);
-			som_agudo();
+            animacaoRBG(frame_coracao4, pio, sm, 255, 0, 0);
+            sleep_ms(500);
+            som_agudo();
             animacaoRBG(frame_coracao5, pio, sm, 255, 0, 0);
         }
-}
-else if(escolha == 7){
-  for(uint8_t i = 0; i < 6; i++){
-    // Animação das cores
-    animacaoRBG(frame_pacman_olhos, pio, sm, 255, 0, 0); // Vermelho
-    animacaoRBG(frame_pacman, pio, sm, 255, 0, 0); 
-    sleep_ms(300);
-    animacaoRBG(frame_pacman_olhos, pio, sm, 0, 255, 0); // Verde
-    animacaoRBG(frame_pacman, pio, sm, 0, 255, 0); 
-    sleep_ms(300);
-    animacaoRBG(frame_pacman_olhos, pio, sm, 0, 0, 255); // Azul
-    animacaoRBG(frame_pacman, pio, sm, 0, 0, 255); 
-    sleep_ms(300);
-    animacaoRBG(frame_pacman_olhos, pio, sm, 150, 150, 150); // Cinza
-    animacaoRBG(frame_pacman, pio, sm, 150, 150, 150); 
-    sleep_ms(300);
-    animacaoRBG(frame_pacman_olhos, pio, sm, 255, 150, 0); // Laranja
-    animacaoRBG(frame_pacman, pio, sm, 255, 150, 0); 
-    sleep_ms(300);
-  }
-    apagar_led(frame_branco, pio, sm);
-    sleep_ms(500);
-}
+    }
+    else if(escolha == 7){
+      for(uint8_t i = 0; i < 6; i++){
+          // Animação das cores
+          animacaoRBG(frame_pacman_olhos, pio, sm, 255, 0, 0); // Vermelho
+          animacaoRBG(frame_pacman, pio, sm, 255, 0, 0); 
+          sleep_ms(300);
+          animacaoRBG(frame_pacman_olhos, pio, sm, 0, 255, 0); // Verde
+          animacaoRBG(frame_pacman, pio, sm, 0, 255, 0); 
+          sleep_ms(300);
+          animacaoRBG(frame_pacman_olhos, pio, sm, 0, 0, 255); // Azul
+          animacaoRBG(frame_pacman, pio, sm, 0, 0, 255); 
+          sleep_ms(300);
+          animacaoRBG(frame_pacman_olhos, pio, sm, 150, 150, 150); // Cinza
+          animacaoRBG(frame_pacman, pio, sm, 150, 150, 150); 
+          sleep_ms(300);
+          animacaoRBG(frame_pacman_olhos, pio, sm, 255, 150, 0); // Laranja
+          animacaoRBG(frame_pacman, pio, sm, 255, 150, 0); 
+          sleep_ms(300);
+        }
+          apagar_led(frame_branco, pio, sm);
+          sleep_ms(500);
+      }
 }

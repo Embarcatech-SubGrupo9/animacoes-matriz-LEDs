@@ -28,6 +28,8 @@ set(PICO_BOARD pico_w CACHE STRING "Board type")
 # Pull in Raspberry Pi Pico SDK (must be before project)
 include(pico_sdk_import.cmake)
 
+# Adiciona o diretório "animacoes" como um diretório de cabeçalhos
+
 project(animacoes-matriz-LEDs C CXX ASM)
 
 # Initialise the Raspberry Pi Pico SDK
@@ -38,9 +40,8 @@ pico_sdk_init()
 add_executable(animacoes-matriz-LEDs
          animacoes-matriz-LEDs.c 
          teclado/tecladoMatricial.c
-         
-         
-         
+         animacoes/sabre.c
+         buzzer/buzzer.c
 )
 
 pico_set_program_name(animacoes-matriz-LEDs "animacoes-matriz-LEDs")
