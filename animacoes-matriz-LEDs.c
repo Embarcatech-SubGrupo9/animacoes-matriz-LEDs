@@ -190,6 +190,37 @@ double animacao05_frame05 [NUM_LEDS] = { 0.0, 1.0, 0.0, 0.0, 0.0,
                                          0.0, 0.0, 0.0, 1.0, 0.0,
                                          0.0, 1.0, 0.0, 0.0, 0.0};
 
+//Quinta sexta, .
+double animacao06_frame01 [NUM_LEDS] = { 1.0, 0.0, 0.0, 0.0, 0.0,
+                                         0.0, 1.0, 0.0, 0.0, 0.0,
+                                         0.0, 0.0, 1.0, 0.0, 0.0,
+                                         0.0, 0.0, 0.0, 1.0, 0.0,
+                                         0.0, 0.0, 0.0, 0.0, 1.0};
+
+double animacao06_frame02 [NUM_LEDS] = { 1.0, 0.0, 0.0, 0.0, 1.0,
+                                         0.0, 1.0, 0.0, 1.0, 0.0,
+                                         0.0, 0.0, 1.0, 0.0, 0.0,
+                                         0.0, 1.0, 0.0, 1.0, 0.0,
+                                         1.0, 0.0, 0.0, 0.0, 1.0};
+
+double animacao06_frame03 [NUM_LEDS] = { 1.0, 0.0, 1.0, 0.0, 1.0,
+                                         0.0, 1.0, 1.0, 1.0, 0.0,
+                                         0.0, 0.0, 1.0, 0.0, 0.0,
+                                         0.0, 1.0, 1.0, 1.0, 0.0,
+                                         1.0, 0.0, 1.0, 0.0, 1.0};
+
+double animacao06_frame04 [NUM_LEDS] = { 1.0, 0.0, 1.0, 0.0, 1.0,
+                                         0.0, 1.0, 1.0, 1.0, 0.0,
+                                         1.0, 1.0, 1.0, 1.0, 1.0,
+                                         0.0, 1.0, 1.0, 1.0, 0.0,
+                                         1.0, 0.0, 1.0, 0.0, 1.0};
+
+double animacao06_frame05 [NUM_LEDS] = { 1.0, 1.0, 1.0, 1.0, 1.0,
+                                         1.0, 1.0, 1.0, 1.0, 1.0,
+                                         1.0, 1.0, 1.0, 1.0, 1.0,
+                                         1.0, 1.0, 1.0, 1.0, 1.0,
+                                         1.0, 1.0, 1.0, 1.0, 1.0};
+
 //Frame para apagar os led.
 double frame_branco [NUM_LEDS] = { 0.0, 0.0, 0.0, 0.0, 0.0,
                                    0.0, 0.0, 0.0, 0.0, 0.0,
@@ -273,6 +304,7 @@ int main()
             switch (tecla)
             {
             case '0':
+                selececao_animacao(0, pio, sm);
                 sleep_ms(100);
                 break;
             case '1':
@@ -517,7 +549,7 @@ void selececao_animacao(uint8_t escolha, PIO pio, uint sm){
         }
     }
     else if(escolha == 7){
-      for(uint8_t i = 0; i < 6; i++){
+        for(uint8_t i = 0; i < 6; i++){
           // Animação das cores
           animacaoRBG(frame_pacman_olhos, pio, sm, 255, 0, 0); // Vermelho
           animacaoRBG(frame_pacman, pio, sm, 255, 0, 0); 
@@ -535,7 +567,23 @@ void selececao_animacao(uint8_t escolha, PIO pio, uint sm){
           animacaoRBG(frame_pacman, pio, sm, 255, 150, 0); 
           sleep_ms(300);
         }
-          apagar_led(frame_branco, pio, sm);
-          sleep_ms(500);
-      }
+        apagar_led(frame_branco, pio, sm);
+        sleep_ms(500);
+    }
+        else if(escolha == 0){
+        for(uint8_t i = 0; i < 3; i++){
+            animacaoRBG(animacao06_frame01, pio, sm, 255, 0, 0);
+            sleep_ms(500);
+            animacaoRBG(animacao06_frame02, pio, sm, 255, 255, 0);
+            sleep_ms(500);
+            animacaoRBG(animacao06_frame03, pio, sm, 0, 255, 0);
+            sleep_ms(500);
+            animacaoRBG(animacao06_frame04, pio, sm, 0, 0, 255);
+            sleep_ms(500);
+            animacaoRBG(animacao06_frame05, pio, sm, 255, 255, 255);
+            sleep_ms(500);
+        }
+        apagar_led(frame_branco, pio, sm);
+        sleep_ms(500);
+    }
 }
